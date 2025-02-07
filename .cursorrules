@@ -1,0 +1,140 @@
+You are an expert in TypeScript, Next.js, React, Prisma, Tailwind, and tRPC:
+Code Style and Structure
+
+Write concise, technical TypeScript code with accurate examples.
+Use functional and declarative programming patterns; avoid classes.
+Prefer iteration and modularization over code duplication.
+Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+Structure files: exported component, subcomponents, helpers, static content, types.
+Follow Next.js best practices for file structure and routing.
+
+Naming Conventions
+
+Use lowercase with dashes for directories (e.g., components/auth-wizard).
+Favor named exports for components.
+Use PascalCase for components and interfaces.
+Use camelCase for variables and functions.
+
+TypeScript Usage
+
+Use TypeScript for all code; prefer interfaces over types.
+Avoid enums; use const assertions instead.
+Use functional components with TypeScript interfaces.
+Enable strict mode in TypeScript config.
+
+Syntax and Formatting
+
+Use arrow functions for components and handlers.
+Implement proper error boundaries.
+Use declarative JSX.
+Use Prettier for consistent code formatting.
+
+UI and Styling
+
+Use Tailwind CSS for styling with proper class organization.
+Implement responsive design using Tailwind breakpoints.
+Use CSS modules when needed for component-specific styles.
+Support dark mode using Tailwind's dark mode utilities.
+Ensure high accessibility (a11y) standards.
+
+Next.js Features
+
+Use App Router for modern routing capabilities.
+Implement proper loading and error states.
+Use Server Components where appropriate.
+Leverage Next.js Image component for optimized images.
+Use proper metadata management.
+
+State Management
+
+Use React Context and useReducer for global state.
+Implement proper form management with react-hook-form.
+Use tRPC for type-safe API calls.
+Consider Zustand for complex state management.
+
+Database and Prisma
+
+Write clean and efficient Prisma schemas.
+Use proper database relations.
+Implement middleware for common operations.
+Use transactions when needed.
+Follow proper migration practices.
+
+tRPC Implementation
+
+Create type-safe procedures.
+Implement proper error handling.
+Use middleware for authentication.
+Structure routers properly.
+Use proper input validation with Zod.
+
+Example Structure:
+typescriptCopy// src/server/api/routers/user.ts
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+export const userRouter = createTRPCRouter({
+  getProfile: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.user.findUnique({
+        where: { id: input.userId },
+      });
+    }),
+});
+
+// src/components/Profile.tsx
+import { api } from "~/utils/api";
+
+interface ProfileProps {
+  userId: string;
+}
+
+export function Profile({ userId }: ProfileProps) {
+  const { data, isLoading } = api.user.getProfile.useQuery({ userId });
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div className="rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        {data?.name}
+      </h1>
+    </div>
+  );
+}
+
+// src/pages/profile/[id].tsx
+import { type NextPage } from "next";
+import { Profile } from "~/components/Profile";
+
+const ProfilePage: NextPage = () => {
+  return (
+    <div className="container mx-auto px-4">
+      <Profile userId="123" />
+    </div>
+  );
+};
+
+export default ProfilePage;
+This structure demonstrates:
+
+Type-safe API routes with tRPC
+Proper component organization
+Tailwind styling
+Next.js routing
+Prisma integration
+Error handling
+Loading states
+Dark mode support
+
+Remember to:
+
+Keep components small and focused
+Use proper TypeScript types
+Implement error boundaries
+Follow accessibility guidelines
+Use proper loading states
+Implement proper SEO practices
+Follow security best practices
+Write tests for critical functionality
